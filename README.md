@@ -65,3 +65,17 @@ travel-planner/
 - **Formatação:** Prettier + ESLint (configuração compartilhada na raiz).
 - **Commits:** mensagens objetivas no imperativo.
 - **Scripts:** comandos comuns (`dev`, `build`, `lint`, `test`) expostos em cada workspace e orquestrados pela raiz.
+
+## Como rodar
+
+Pré-requisitos: Node.js 20+ e npm 10+.
+
+```bash
+npm install         # instala dependências de todos os workspaces
+npm run dev         # sobe backend (porta 3001) e frontend (porta 5173) em paralelo
+npm run build       # build de shared, backend e frontend
+npm run lint        # ESLint em todos os workspaces
+npm test            # testes em todos os workspaces
+```
+
+O frontend (`http://localhost:5173`) faz proxy de `/api` para o backend (`http://localhost:3001`). Endpoint de verificação: `GET /api/health`.
