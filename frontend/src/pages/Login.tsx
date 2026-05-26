@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { supabase } from '../lib/supabase.js';
+import { requestLoginOtp, verifyEmailOtp } from '../lib/authActions.js';
 
 interface LoginProps {
   onSwitchToSignUp: () => void;
@@ -18,10 +18,7 @@ export function Login({ onSwitchToSignUp }: LoginProps): JSX.Element {
     e.preventDefault();
     setError(null);
     setSubmitting(true);
-    const { error: otpError } = await supabase.auth.signInWithOtp({
-      email,
-      options: { shouldCreateUser: false },
-    });
+    const { error: otpError } = await requestLoginOtp(email);
     setSubmitting(false);
     if (otpError) {
       setError(otpError.message);
@@ -34,11 +31,7 @@ export function Login({ onSwitchToSignUp }: LoginProps): JSX.Element {
     e.preventDefault();
     setError(null);
     setSubmitting(true);
-    const { error: verifyError } = await supabase.auth.verifyOtp({
-      email,
-      token: otp,
-      type: 'email',
-    });
+    const { error: verifyError } = await verifyEmailOtp(email, otp);
     setSubmitting(false);
     if (verifyError) {
       setError(verifyError.message);
