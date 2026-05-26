@@ -1,28 +1,42 @@
 import { useEffect, useState } from 'react';
-import { fetchHealth } from './services/health.js';
-import type { HealthResponse } from '@travel-planner/shared';
+import type { Itinerary } from '@travel-planner/shared';
+import { CreateItineraryForm } from './components/CreateItineraryForm.js';
+import { fetchItineraries } from './services/itineraries.js';
 
 export function App(): JSX.Element {
-  const [health, setHealth] = useState<HealthResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [itineraries, setItineraries] = useState<Itinerary[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchHealth()
-      .then(setHealth)
-      .catch((err: unknown) => setError(err instanceof Error ? err.message : String(err)));
+    fetchItineraries()
+      .then(setItineraries)
+      .catch((err: unknown) =>
+        setLoadError(err instanceof Error ? err.message : String(err)),
+      );
   }, []);
+
+  function handleCreated(itinerary: Itinerary): void {
+    setItineraries((prev) => [...prev, itinerary]);
+  }
 
   return (
     <main>
       <h1>Travel Planner</h1>
-      <p>Frontend inicial pronto.</p>
       <section>
-        <h2>Backend status</h2>
-        {error ? <p>Erro: {error}</p> : null}
-        {health ? (
-          <pre>{JSON.stringify(health, null, 2)}</pre>
+        <h2>Novo roteiro</h2>
+        <CreateItineraryForm onCreated={handleCreated} />
+      </section>
+      <section>
+        <h2>Meus roteiros</h2>
+        {loadError ? <p>Erro ao carregar roteiros: {loadError}</p> : null}
+        {itineraries.length === 0 && !loadError ? (
+          <p>Nenhum roteiro criado ainda.</p>
         ) : (
-          !error && <p>Carregando...</p>
+          <ul>
+            {itineraries.map((it) => (
+              <li key={it.id}>{it.title}</li>
+            ))}
+          </ul>
         )}
       </section>
     </main>
