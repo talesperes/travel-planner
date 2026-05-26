@@ -1,6 +1,18 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Home } from './Home.js';
+
+vi.mock('../lib/supabase.js', () => ({
+  supabase: {
+    auth: {
+      getSession: vi.fn().mockResolvedValue({
+        data: { session: { access_token: 'test-token' } },
+        error: null,
+      }),
+    },
+  },
+}));
+
+const { Home } = await import('./Home.js');
 
 describe('Home', () => {
   beforeEach(() => {
