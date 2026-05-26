@@ -3,14 +3,15 @@ import type { Itinerary } from '@travel-planner/shared';
 
 const itineraries: Itinerary[] = [];
 
-export function listItineraries(): Itinerary[] {
-  return [...itineraries];
+export function listItineraries(userId: string): Itinerary[] {
+  return itineraries.filter((it) => it.userId === userId);
 }
 
-export function createItinerary(title: string): Itinerary {
+export function createItinerary(input: { title: string; userId: string }): Itinerary {
   const itinerary: Itinerary = {
     id: randomUUID(),
-    title,
+    userId: input.userId,
+    title: input.title,
     createdAt: new Date().toISOString(),
   };
   itineraries.push(itinerary);

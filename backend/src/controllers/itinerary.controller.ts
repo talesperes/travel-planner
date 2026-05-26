@@ -6,8 +6,9 @@ interface ErrorResponse {
   error: string;
 }
 
-export function getItineraries(_req: Request, res: Response<Itinerary[]>): void {
-  res.json(listItineraries());
+export function getItineraries(req: Request, res: Response<Itinerary[]>): void {
+  // requireAuth runs first; req.auth is always set here.
+  res.json(listItineraries(req.auth!.userId));
 }
 
 export function postItinerary(
@@ -20,6 +21,6 @@ export function postItinerary(
     return;
   }
 
-  const itinerary = createItinerary(title);
+  const itinerary = createItinerary({ title, userId: req.auth!.userId });
   res.status(201).json(itinerary);
 }
