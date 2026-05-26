@@ -11,6 +11,10 @@ interface QuickAction {
   description: string;
 }
 
+interface HomeProps {
+  onSignOut?: () => void;
+}
+
 const quickActions: QuickAction[] = [
   {
     id: 'invite',
@@ -41,7 +45,7 @@ function formatDate(iso: string): string {
   });
 }
 
-export function Home(): JSX.Element {
+export function Home({ onSignOut }: HomeProps = {}): JSX.Element {
   const [health, setHealth] = useState<HealthResponse | null>(null);
   const [healthError, setHealthError] = useState<string | null>(null);
   const [itineraries, setItineraries] = useState<Itinerary[]>([]);
@@ -101,6 +105,11 @@ export function Home(): JSX.Element {
           <button type="button" className={styles.secondaryButton}>
             Explorar destinos
           </button>
+          {onSignOut ? (
+            <button type="button" className={styles.secondaryButton} onClick={onSignOut}>
+              Sair
+            </button>
+          ) : null}
         </div>
       </section>
 
